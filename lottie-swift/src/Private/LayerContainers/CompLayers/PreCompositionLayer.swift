@@ -18,6 +18,7 @@ final class PreCompositionLayer: CompositionLayer {
        asset: PrecompAsset,
        layerImageProvider: LayerImageProvider,
        textProvider: AnimationTextProvider,
+       layerVideoProvider: LayerVideoProvider,
        fontProvider: AnimationFontProvider,
        assetLibrary: AssetLibrary?,
        frameRate: CGFloat) {
@@ -32,7 +33,7 @@ final class PreCompositionLayer: CompositionLayer {
     contentsLayer.masksToBounds = true
     contentsLayer.bounds = CGRect(origin: .zero, size: CGSize(width: precomp.width, height: precomp.height))
     
-    let layers = asset.layers.initializeCompositionLayers(assetLibrary: assetLibrary, layerImageProvider: layerImageProvider, textProvider: textProvider,  fontProvider: fontProvider, frameRate: frameRate)
+    let layers = asset.layers.initializeCompositionLayers(assetLibrary: assetLibrary, layerImageProvider: layerImageProvider, textProvider: textProvider, layerVideoProvider: layerVideoProvider,  fontProvider: fontProvider, frameRate: frameRate)
     
     var imageLayers = [ImageCompositionLayer]()
     
@@ -88,6 +89,17 @@ final class PreCompositionLayer: CompositionLayer {
       localFrame = (frame - startFrame) / timeStretch
     }
     animationLayers.forEach( { $0.displayWithFrame(frame: localFrame, forceUpdates: forceUpdates) })
+  }
+    
+  override func hideContentsWithFrame(frame: CGFloat, forceUpdates: Bool) {
+    let localFrame: CGFloat
+    if let remappingNode = remappingNode {
+      remappingNode.update(frame: frame)
+      localFrame = remappingNode.value.cgFloatValue * frameRate
+    } else {
+      localFrame = (frame - startFrame) / timeStretch
+    }
+    animationLayers.forEach( { $0.hideContentsWithFrame(frame: localFrame, forceUpdates: forceUpdates) })
   }
   
   override var keypathProperties: [String : AnyNodeProperty] {
