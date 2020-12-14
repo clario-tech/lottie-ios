@@ -48,6 +48,7 @@ class FillRenderer: PassThroughOutputNode, Renderable {
     let material = SCNMaterial()
     material.diffuse.contents = color
     material.transparency = opacity
+    material.isDoubleSided = true
 //    layer.fillColor = color
 //    layer.opacity = Float(opacity)
 //    material.fillMode = fillRule.caFillRule

@@ -373,6 +373,7 @@ class TextCompositionLayer: CompositionLayer {
     geometry = SCNPlane(width: size.width, height: size.height)
     
     let material = SCNMaterial()
+    material.isDoubleSided = true
     material.diffuse.contents = contentsLayer
     
     geometry?.materials = [material]

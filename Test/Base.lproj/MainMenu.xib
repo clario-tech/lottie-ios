@@ -695,7 +695,7 @@
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="qn7-dd-PW6" customClass="AnimationView" customModule="Lottie">
                         <rect key="frame" x="0.0" y="72" width="1200" height="650"/>
                         <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="animationName" value="lumis"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="animationName" value="mobilePromo"/>
                         </userDefinedRuntimeAttributes>
                     </customView>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iTB-xm-H1X">

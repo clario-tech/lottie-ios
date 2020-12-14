@@ -158,6 +158,7 @@ class VideoCompositionLayer: CompositionLayer & CAAnimationDelegate {
         let material = SCNMaterial()
         
         material.diffuse.contents = playerLayer
+        material.isDoubleSided = true
         
         geometry?.materials = [material]
         

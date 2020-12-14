@@ -25,7 +25,8 @@ class ImageCompositionLayer: CompositionLayer {
   
   init(imageLayer: ImageLayerModel, size: CGSize) {
     self.imageReferenceID = imageLayer.referenceID
-    self.material = SCNMaterial()
+    material = SCNMaterial()
+    material.isDoubleSided = true
     super.init(layer: imageLayer, size: size)
     
     geometry?.materials = [material]
