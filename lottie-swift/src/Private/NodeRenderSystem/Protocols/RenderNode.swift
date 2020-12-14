@@ -8,6 +8,7 @@
 import Foundation
 import CoreGraphics
 import QuartzCore
+import SceneKit
 
 /// A protocol that defines a node that holds render instructions
 protocol RenderNode {
@@ -30,7 +31,7 @@ protocol Renderable {
   var shouldRenderInContext: Bool { get }
   
   /// Passes in the CAShapeLayer to update
-  func updateShapeLayer(layer: CAShapeLayer)
+  func updateShapeLayer(layer: SCNShape)
   
   /// Asks the renderer what the renderable bounds is for the given box.
   func renderBoundsFor(_ boundingBox: CGRect) -> CGRect

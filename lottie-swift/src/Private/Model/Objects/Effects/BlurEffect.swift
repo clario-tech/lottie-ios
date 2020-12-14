@@ -11,14 +11,15 @@ import QuartzCore
 #if os(iOS)
 import CoreImage
 #endif
+import SceneKit
 
 class BlurEffect: Effect {
     
     private var gaussianBlurEffect: GaussianBlurEffect?
     
-    override func setUp(layer: CALayer) {
+    override func setUp(layer: SCNNode) {
         if name == "Gaussian Blur" {
-            guard let shapeLayer = layer as? (CALayer & Composition) else { return }
+            guard let shapeLayer = layer as? (SCNNode & Composition) else { return }
             if gaussianBlurEffect == nil {
                 gaussianBlurEffect = GaussianBlurEffect(layer: shapeLayer, effect: self)
             }
@@ -27,7 +28,7 @@ class BlurEffect: Effect {
         }
     }
     
-    override func apply(layer: CALayer, frame: CGFloat) {
+    override func apply(layer: SCNNode, frame: CGFloat) {
         if name == "Gaussian Blur" {
             gaussianBlurEffect?.apply(frame: frame)
         } else {
@@ -37,11 +38,11 @@ class BlurEffect: Effect {
 }
 
 class GaussianBlurEffect {
-    let layer: (CALayer & Composition)
+    let layer: (SCNNode & Composition)
     
     let blurriness: KeyframeInterpolator<Vector1D>?
     
-    init(layer: (CALayer & Composition), effect: Effect) {
+    init(layer: (SCNNode & Composition), effect: Effect) {
         self.layer = layer
         self.blurriness = (effect.values?.first(where: { $0.name == "Blurriness" }) as? InterpolatableEffectValue<Vector1D>)?.interpolator
     }
@@ -52,17 +53,17 @@ class GaussianBlurEffect {
         }
         
         if #available(OSX 10.10, *) {
-            layer.contentsLayer.filters = [CIFilter(name: "CIGaussianBlur", parameters: ["inputRadius": blurriness]) as Any]
+            layer.filters = [CIFilter(name: "CIGaussianBlur", parameters: ["inputRadius": blurriness])!]
         }
     }
 }
 
 class FastBlurEffect {
-    let layer: (CALayer & Composition)
+    let layer: (SCNNode & Composition)
     
     let blurriness: KeyframeInterpolator<Vector1D>?
     
-    init(layer: (CALayer & Composition), effect: Effect) {
+    init(layer: (SCNNode & Composition), effect: Effect) {
         self.layer = layer
         self.blurriness = (effect.values?.first(where: { $0.name == "Blurriness" }) as? InterpolatableEffectValue<Vector1D>)?.interpolator
     }
@@ -73,7 +74,7 @@ class FastBlurEffect {
         }
         
         if #available(OSX 10.10, *) {
-            layer.contentsLayer.filters = [CIFilter(name: "CIGaussianBlur", parameters: ["inputRadius": blurriness]) as Any]
+            layer.filters = [CIFilter(name: "CIGaussianBlur", parameters: ["inputRadius": blurriness])!]
         }
     }
 }

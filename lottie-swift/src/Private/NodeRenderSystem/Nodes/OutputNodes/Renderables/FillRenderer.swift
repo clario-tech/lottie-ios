@@ -8,6 +8,7 @@
 import Foundation
 import QuartzCore
 import CoreGraphics
+import SceneKit
 
 extension FillRule {
   var cgFillRule: CGPathFillRule {
@@ -27,6 +28,15 @@ extension FillRule {
       return CAShapeLayerFillRule.nonZero
     }
   }
+    
+//    var snFillRule: SCNFillMode {
+//      switch self {
+//      case .evenOdd:
+//        return .
+//      default:
+//        return CAShapeLayerFillRule.nonZero
+//      }
+//    }
 }
 
 /// A rendered for a Path Fill
@@ -34,10 +44,16 @@ class FillRenderer: PassThroughOutputNode, Renderable {
   
   let shouldRenderInContext: Bool = false
   
-  func updateShapeLayer(layer: CAShapeLayer) {
-    layer.fillColor = color
-    layer.opacity = Float(opacity)
-    layer.fillRule = fillRule.caFillRule
+  func updateShapeLayer(layer: SCNShape) {
+    let material = SCNMaterial()
+    material.diffuse.contents = color
+    material.transparency = opacity
+//    layer.fillColor = color
+//    layer.opacity = Float(opacity)
+//    material.fillMode = fillRule.caFillRule
+//    layer.fillRule = fillRule.caFillRule
+    
+    layer.materials = [material]
     hasUpdate = false
   }
   

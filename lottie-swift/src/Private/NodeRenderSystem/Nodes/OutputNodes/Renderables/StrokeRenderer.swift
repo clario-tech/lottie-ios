@@ -7,6 +7,7 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 extension LineJoin {
   var cgLineJoin: CGLineJoin {
@@ -147,16 +148,16 @@ class StrokeRenderer: PassThroughOutputNode, Renderable {
     inContext.strokePath()
   }
   
-  func updateShapeLayer(layer: CAShapeLayer) {
-    layer.strokeColor = color
-    layer.opacity = Float(opacity)
-    layer.lineWidth = width
-    layer.lineJoin = lineJoin.caLineJoin
-    layer.lineCap = lineCap.caLineCap
-    layer.lineDashPhase = dashPhase ?? 0
-    layer.fillColor = nil
-    if let dashPattern = dashLengths {
-      layer.lineDashPattern = dashPattern.map({ NSNumber(value: Double($0))})
-    }
+  func updateShapeLayer(layer: SCNShape) {
+//    layer.strokeColor = color
+//    layer.opacity = Float(opacity)
+//    layer.lineWidth = width
+//    layer.lineJoin = lineJoin.caLineJoin
+//    layer.lineCap = lineCap.caLineCap
+//    layer.lineDashPhase = dashPhase ?? 0
+//    layer.fillColor = nil
+//    if let dashPattern = dashLengths {
+//      layer.lineDashPattern = dashPattern.map({ NSNumber(value: Double($0))})
+//    }
   }
 }

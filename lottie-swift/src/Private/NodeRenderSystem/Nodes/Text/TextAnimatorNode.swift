@@ -8,8 +8,12 @@
 import Foundation
 import CoreGraphics
 import QuartzCore
+import SceneKit
 
 class TextAnimatorNodeProperties: NodePropertyMap, KeypathSearchable {
+
+    var keypathLayer: SCNNode?
+    
   
   let keypathName: String
   
@@ -221,11 +225,13 @@ class TextOutputNode: NodeOutput {
     return true
   }
   
-  var outputPath: CGPath?
+  var outputPath: NSBezierPath?
   
 }
 
 class TextAnimatorNode: AnimatorNode {
+    var keypathLayer: SCNNode?
+    
   
   let textOutputNode: TextOutputNode
   

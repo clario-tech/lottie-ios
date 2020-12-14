@@ -11,6 +11,7 @@ import QuartzCore
 #if os(iOS)
 import CoreImage
 #endif
+import SceneKit
 
 class ControlEffect: Effect {
     
@@ -19,21 +20,20 @@ class ControlEffect: Effect {
     private var radialFastBlurEffect: RadialFastBlurEffect?
     private var centerVerticallyEffect: CenteredVerticallyEffect?
     
-    override func setUp(layer: CALayer) {
+    override func setUp(layer: SCNNode) {
         if name == "Evolution_(%)_In" {
             guard let textLayer = layer as? TextCompositionLayer else { return }
             if evolutionEffect == nil {
                 evolutionEffect = DelayedEvolutionEffect(layer: textLayer, effect: self)
             }
         } else if name == "CC Radial Fast Blur" {
-            guard let shapeLayer = layer as? (CALayer & ShapeComposition) else { return }
+            guard let shapeLayer = layer as? (SCNNode & ShapeComposition) else { return }
             if radialFastBlurEffect == nil {
                 radialFastBlurEffect = RadialFastBlurEffect(layer: shapeLayer, effect: self)
             }
         } else if name == "CC Fast Blur" || name == "Fast Blur (Legacy)" {
             // Fast blur can only now be applied to flat shapes
-            guard let shapeLayer = layer as? (CALayer & ShapeComposition),
-                  !(shapeLayer is ShapeTransformCompositionLayer) else { return }
+            guard let shapeLayer = layer as? (SCNNode & ShapeComposition) else { return }
             if fastBlurEffect == nil {
                 fastBlurEffect = FastBlurEffect(layer: shapeLayer, effect: self)
             }
@@ -47,7 +47,7 @@ class ControlEffect: Effect {
         }
     }
     
-    override func apply(layer: CALayer, frame: CGFloat) {
+    override func apply(layer: SCNNode, frame: CGFloat) {
         if name == "Evolution_(%)_In" {
             evolutionEffect?.apply(frame: frame)
         } else if name == "CC Radial Fast Blur" {
@@ -113,16 +113,16 @@ class DelayedEvolutionEffect {
 }
 
 class RadialFastBlurEffect {
-    let layer: CALayer & ShapeComposition
+    let layer: SCNNode & ShapeComposition
     let replicator: CAReplicatorLayer
     
     let center: KeyframeInterpolator<Vector3D>?
     var amount: KeyframeInterpolator<Vector1D>?
     var zoom: BoolEffectValue?
     
-    init(layer: CALayer & ShapeComposition, effect: Effect) {
+    init(layer: SCNNode & ShapeComposition, effect: Effect) {
         let replicator = CAReplicatorLayer()
-        replicator.frame = layer.frame
+//        replicator.frame = layer.frame
         replicator.instanceCount = 5
         self.layer = layer
         self.replicator = replicator
@@ -137,15 +137,15 @@ class RadialFastBlurEffect {
             return
         }
         
-        if replicator.superlayer == nil {
-            layer.superlayer?.addSublayer(replicator)
-            replicator.addSublayer(layer)
-        }
-        
-        if #available(OSX 10.10, *) {
-            layer.contentsLayer.filters = [CIFilter(name: "CIZoomBlur", parameters: [kCIInputCenterKey: center.ciVector, "inputAmount": amount]) as Any,
-                             CIFilter(name: "CIBoxBlur", parameters: ["inputRadius": amount / 5]) as Any]
-        }
+//        if replicator.superlayer == nil {
+//            layer.superlayer?.addSublayer(replicator)
+//            replicator.addSublayer(layer)
+//        }
+//        
+//        if #available(OSX 10.10, *) {
+//            layer.filters = [CIFilter(name: "CIZoomBlur", parameters: [kCIInputCenterKey: center.ciVector, "inputAmount": amount]) as Any,
+//                             CIFilter(name: "CIBoxBlur", parameters: ["inputRadius": amount / 5]) as Any]
+//        }
     }
 }
 

@@ -56,7 +56,7 @@ public extension CALayer {
 
 extension CompositionLayer: CustomLayerDebugging {
   func layerForDebugging() -> CALayer {
-    return contentsLayer
+    return CALayer()
   }
 }
 

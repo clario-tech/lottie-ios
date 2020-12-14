@@ -7,6 +7,7 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 // MARK: - Renderer
 
@@ -19,7 +20,7 @@ class GradientStrokeRenderer: PassThroughOutputNode, Renderable {
   
   var shouldRenderInContext: Bool = true
   
-  func updateShapeLayer(layer: CAShapeLayer) {
+  func updateShapeLayer(layer: SCNShape) {
     /// Not Applicable
   }
   

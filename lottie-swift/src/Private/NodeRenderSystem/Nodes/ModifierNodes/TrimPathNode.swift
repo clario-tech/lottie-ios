@@ -7,6 +7,7 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 class TrimPathProperties: NodePropertyMap, KeypathSearchable {
   

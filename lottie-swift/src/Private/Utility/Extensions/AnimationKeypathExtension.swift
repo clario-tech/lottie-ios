@@ -7,6 +7,7 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 extension KeypathSearchable {
   
@@ -88,7 +89,7 @@ extension KeypathSearchable {
     return results
   }
   
-  func layer(for keyPath: AnimationKeypath) -> CALayer? {
+  func layer(for keyPath: AnimationKeypath) -> SCNNode? {
     if keyPath.nextKeypath == nil, let layerKey = keyPath.currentKey,  layerKey.equalsKeypath(keypathName) {
       /// We found our layer!
       return keypathLayer
@@ -109,9 +110,9 @@ extension KeypathSearchable {
     return nil
   }
   
-  func compositionLayer(for keyPath: AnimationKeypath) -> (CALayer & Composition)? {
+  func compositionLayer(for keyPath: AnimationKeypath) -> (SCNNode & Composition)? {
     if keyPath.nextKeypath == nil, let layerKey = keyPath.currentKey, layerKey.equalsKeypath(keypathName) {
-      return self as? (CALayer & Composition)
+      return self as? (SCNNode & Composition)
     }
 
     guard let nextKeypath = keyPath.popKey(keypathName) else {

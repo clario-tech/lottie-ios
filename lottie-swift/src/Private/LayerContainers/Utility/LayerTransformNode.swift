@@ -8,8 +8,11 @@
 import Foundation
 import CoreGraphics
 import QuartzCore
+import SceneKit
 
 class LayerTransformProperties: NodePropertyMap, KeypathSearchable {
+    var keypathLayer: SCNNode?
+    
   
   init(transform: Transform) {
     
@@ -79,6 +82,8 @@ class LayerTransformProperties: NodePropertyMap, KeypathSearchable {
 }
 
 class LayerTransformNode: AnimatorNode {
+    var keypathLayer: SCNNode?
+    
   let outputNode: NodeOutput = PassThroughOutputNode(parent: nil)
   
   init(transform: Transform) {

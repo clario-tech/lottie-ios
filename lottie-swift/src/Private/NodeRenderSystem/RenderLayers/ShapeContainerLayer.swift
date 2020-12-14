@@ -7,36 +7,37 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 /**
  The base layer that holds Shapes and Shape Renderers
  */
-class ShapeContainerLayer: CALayer {
+class ShapeContainerLayer: SCNNode {
   
   private(set) var renderLayers: [ShapeContainerLayer] = []
   
   override init() {
     super.init()
-    self.actions = [
-      "position" : NSNull(),
-      "bounds" : NSNull(),
-      "anchorPoint" : NSNull(),
-      "transform" : NSNull(),
-      "opacity" : NSNull(),
-      "hidden" : NSNull(),
-    ]
+//    self.actions = [
+//      "position" : NSNull(),
+//      "bounds" : NSNull(),
+//      "anchorPoint" : NSNull(),
+//      "transform" : NSNull(),
+//      "opacity" : NSNull(),
+//      "hidden" : NSNull(),
+//    ]
   }
   
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
   
-  override init(layer: Any) {
-    guard let layer = layer as? ShapeContainerLayer else {
-      fatalError("init(layer:) wrong class.")
-    }
-    super.init(layer: layer)
-  }
+//  override init(layer: Any) {
+//    guard let layer = layer as? ShapeContainerLayer else {
+//      fatalError("init(layer:) wrong class.")
+//    }
+//    super.init(layer: layer)
+//  }
   
   var renderScale: CGFloat = 1 {
     didSet {
@@ -46,7 +47,9 @@ class ShapeContainerLayer: CALayer {
   
   func insertRenderLayer(_ layer: ShapeContainerLayer) {
     renderLayers.append(layer)
-    insertSublayer(layer, at: 0)
+//    addChildNode(layer)
+    insertChildNode(layer, at: 0)
+//    insertSublayer(layer, at: 0)
   }
   
   func markRenderUpdates(forFrame: CGFloat) {

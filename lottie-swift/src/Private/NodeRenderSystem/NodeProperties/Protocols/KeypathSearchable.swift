@@ -7,6 +7,7 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 /// Protocol that provides keypath search functionality. Returns all node properties associated with a keypath.
 protocol KeypathSearchable {
@@ -20,5 +21,5 @@ protocol KeypathSearchable {
   /// Children Keypaths
   var childKeypaths: [KeypathSearchable] { get }
   
-  var keypathLayer: CALayer? { get }
+  var keypathLayer: SCNNode? { get }
 }

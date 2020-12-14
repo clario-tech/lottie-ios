@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreGraphics
+import SceneKit
 
 class PassThroughOutputNode: NodeOutput {
   
@@ -27,7 +28,7 @@ class PassThroughOutputNode: NodeOutput {
     return parentUpdate
   }
   
-  var outputPath: CGPath? {
+  var outputPath: NSBezierPath? {
     if let parent = parent {
       return parent.outputPath
     }

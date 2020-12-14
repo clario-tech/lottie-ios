@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreGraphics
+import SceneKit
 
 /// A node that has an output of a BezierPath
 class PathOutputNode: NodeOutput {
@@ -17,7 +18,7 @@ class PathOutputNode: NodeOutput {
   
   let parent: NodeOutput?
   
-  fileprivate(set) var outputPath: CGPath? = nil
+  fileprivate(set) var outputPath: NSBezierPath? = nil
   
   var lastUpdateFrame: CGFloat? = nil
   var lastPathBuildFrame: CGFloat? = nil
@@ -42,17 +43,21 @@ class PathOutputNode: NodeOutput {
     if outputPath == nil {
       /// If the path is clear, build the new path.
       lastPathBuildFrame = forFrame
-      let newPath = CGMutablePath()
+      let newPath = NSBezierPath()
       if let parentNode = parent, let parentPath = parentNode.outputPath {
-        newPath.addPath(parentPath)
+        newPath.append(parentPath)
+//        newPath.addPath(parentPath)
       }
       for path in pathObjects {
         for subPath in path.paths {
-          newPath.addPath(subPath.cgPath())
+            newPath.append(subPath.bezierPath())
+//          newPath.addPath(subPath)
         }
       }
         if var transform = transform {
-            outputPath = newPath.copy(using: &transform)
+            outputPath = newPath
+            outputPath?.transform(using: AffineTransform(m11: transform.a, m12: transform.b, m21: transform.c, m22: transform.d, tX: transform.tx, tY: transform.ty))
+//            outputPath = newPath.copy(using: &transform)
         } else {
             outputPath = newPath
         }

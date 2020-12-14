@@ -7,8 +7,11 @@
 
 import Foundation
 import CoreGraphics
+import SceneKit
 
 class FillNodeProperties: NodePropertyMap, KeypathSearchable {
+    var keypathLayer: SCNNode?
+    
   
   var keypathName: String
   
@@ -34,7 +37,7 @@ class FillNodeProperties: NodePropertyMap, KeypathSearchable {
 }
 
 class FillNode: AnimatorNode, RenderNode {
-  
+    var keypathLayer: SCNNode?
   let fillRender: FillRenderer
   var renderer: NodeOutput & Renderable {
     return fillRender

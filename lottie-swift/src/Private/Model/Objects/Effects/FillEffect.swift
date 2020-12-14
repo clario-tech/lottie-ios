@@ -8,13 +8,14 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 #if os(iOS)
 import UIKit
 #endif
 
 class FillEffect: Effect {
     
-    override func apply(layer: CALayer, frame: CGFloat) {
+    override func apply(layer: SCNNode, frame: CGFloat) {
         values?.forEach({ (value) in
             switch value.name {
             case "Color":

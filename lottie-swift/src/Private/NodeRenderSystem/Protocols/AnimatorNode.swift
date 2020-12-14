@@ -7,6 +7,7 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 /**
  Defines the basic outputs of an animator node.
@@ -20,7 +21,7 @@ protocol NodeOutput {
   /// Returns true if there are any updates upstream. OutputPath must be built before returning.
   func hasOutputUpdates(_ forFrame: CGFloat) -> Bool
   
-  var outputPath: CGPath? { get }
+  var outputPath: NSBezierPath? { get }
   
   var isEnabled: Bool { get set }
 }
@@ -190,7 +191,7 @@ extension AnimatorNode {
     return propertyMap.childKeypaths
   }
   
-  var keypathLayer: CALayer? {
+  var keypathLayer: SCNNode? {
     return nil
   }
   

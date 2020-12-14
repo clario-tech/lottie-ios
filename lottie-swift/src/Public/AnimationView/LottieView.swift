@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SceneKit
 
 #if os(iOS) || os(tvOS) || os(watchOS)
 
@@ -84,12 +85,21 @@ public enum LottieContentMode: Int {
 
 /// A wrapper around NSView for cross platform compatibility.
 @objcMembers
-open class LottieView: NSView {
+open class LottieView: SCNView {
   
   var screenScale: CGFloat {
     return NSApp.mainWindow?.backingScaleFactor ?? 2.0
   }
-  
+    
+    public override init(frame: NSRect, options: [String : Any]? = nil) {
+        super.init(frame: frame, options: options)
+    }
+    
+    required public init?(coder: NSCoder) {
+        super.init(coder: coder)
+//        fatalError("init(coder:) has not been implemented")
+    }
+    
   var viewLayer: CALayer? {
     return layer
   }

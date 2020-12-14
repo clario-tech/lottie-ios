@@ -7,13 +7,14 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 /// A rendered for a Path Fill
 class GradientFillRenderer: PassThroughOutputNode, Renderable {
   
   var shouldRenderInContext: Bool = true
   
-  func updateShapeLayer(layer: CAShapeLayer) {
+  func updateShapeLayer(layer: SCNShape) {
     // Not applicable
   }
   

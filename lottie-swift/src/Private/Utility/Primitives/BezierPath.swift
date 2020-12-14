@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreGraphics
+import SceneKit
 
 /// A container that holds instructions for creating a single, unbroken Bezier Path.
 struct BezierPath {
@@ -397,5 +398,30 @@ extension BezierPath {
     }
     return cgPath
   }
+    
+    func bezierPath() -> NSBezierPath {
+      let cgPath = NSBezierPath()
+      
+      var previousElement: PathElement?
+      for element in elements {
+        if let previous = previousElement {
+          if previous.vertex.outTangentRelative.isZero && element.vertex.inTangentRelative.isZero {
+            cgPath.line(to: element.vertex.point)
+//            cgPath.addLine(to: element.vertex.point)
+          } else {
+            cgPath.curve(to: element.vertex.point, controlPoint1: previous.vertex.outTangent, controlPoint2: element.vertex.inTangent)
+//            cgPath.addCurve(to: element.vertex.point, control1: previous.vertex.outTangent, control2: element.vertex.inTangent)
+          }
+        } else {
+          cgPath.move(to: element.vertex.point)
+        }
+        previousElement = element
+      }
+      if self.closed {
+        cgPath.close()
+//        cgPath.closeSubpath()
+      }
+      return cgPath
+    }
   
 }

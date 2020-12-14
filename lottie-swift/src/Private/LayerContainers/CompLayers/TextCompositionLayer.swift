@@ -9,6 +9,7 @@ import Foundation
 import CoreGraphics
 import QuartzCore
 import CoreText
+import SceneKit
 
 #if os(macOS)
 import Cocoa
@@ -98,6 +99,8 @@ class TextCompositionLayer: CompositionLayer {
     }
   }
     
+    var contentsLayer: CALayer
+    
     override var renderScale: CGFloat {
         didSet {
             textLayer.contentsScale = self.renderScale
@@ -134,6 +137,8 @@ class TextCompositionLayer: CompositionLayer {
         self.textStrokeLayer = DisabledTextLayer()
     }
     
+    self.contentsLayer = CALayer()
+    
     super.init(layer: textLayer, size: .zero)
     
     contentsLayer.addSublayer(self.textLayer)
@@ -148,25 +153,25 @@ class TextCompositionLayer: CompositionLayer {
     fatalError("init(coder:) has not been implemented")
   }
   
-  override init(layer: Any) {
-    /// Used for creating shadow model layers. Read More here: https://developer.apple.com/documentation/quartzcore/calayer/1410842-init
-    guard let layer = layer as? TextCompositionLayer else {
-      fatalError("init(layer:) Wrong Layer Class")
-    }
-    self.rootNode = nil
-    self.textDocument = nil
-    
-    self.textProvider = DefaultTextProvider()
-    
-    self.interpolatableAnchorPoint = nil
-    self.interpolatableScale = nil
-    
-    self.textLayer = DisabledTextLayer()
-    self.textStrokeLayer = DisabledTextLayer()
-    
-	self.fonts = nil
-    super.init(layer: layer)
-  }
+//  override init(layer: Any) {
+//    /// Used for creating shadow model layers. Read More here: https://developer.apple.com/documentation/quartzcore/calayer/1410842-init
+//    guard let layer = layer as? TextCompositionLayer else {
+//      fatalError("init(layer:) Wrong Layer Class")
+//    }
+//    self.rootNode = nil
+//    self.textDocument = nil
+//
+//    self.textProvider = DefaultTextProvider()
+//
+//    self.interpolatableAnchorPoint = nil
+//    self.interpolatableScale = nil
+//
+//    self.textLayer = DisabledTextLayer()
+//    self.textStrokeLayer = DisabledTextLayer()
+//
+//	self.fonts = nil
+//    super.init(layer: layer)
+//  }
   
   override func displayContentsWithFrame(frame: CGFloat, forceUpdates: Bool) {
     guard let textDocument = textDocument else { return }
@@ -362,6 +367,15 @@ class TextCompositionLayer: CompositionLayer {
     
     setupLayer(layer: textLayer)
     textLayer.string = baseAttributedString
+    
+    contentsLayer.frame = CGRect(x: 0, y: 0, width: size.width > 0 ? size.width : 1, height: size.height > 0 ? size.height : 1)
+    
+    geometry = SCNPlane(width: size.width, height: size.height)
+    
+    let material = SCNMaterial()
+    material.diffuse.contents = contentsLayer
+    
+    geometry?.materials = [material]
   }
 }
 

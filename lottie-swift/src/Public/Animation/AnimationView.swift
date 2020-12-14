@@ -7,6 +7,7 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 /// Describes the behavior of an AnimationView when the app is moved to the background.
 public enum LottieBackgroundBehavior {
@@ -173,7 +174,7 @@ open class AnimationView: LottieView {
    Note: Setting this will stop the current animation, if any.
    Note 2: If `animation` is nil, setting this will fallback to 0
    */
-  public var currentTime: TimeInterval {
+  public var currentTimee: TimeInterval {
     set {
       if let animation = animation {
         currentFrame = animation.frameTime(forTime: newValue)
@@ -485,9 +486,9 @@ open class AnimationView: LottieView {
     self.layoutIfNeeded()
     self.forceDisplayUpdate()
     addSubview(subview)
-    if let subViewLayer = subview.viewLayer {
-      sublayer.addSublayer(subViewLayer)
-    }
+//    if let subViewLayer = subview.viewLayer {
+//      sublayer.addSublayer(subViewLayer)
+//    }
   }
   
   /**
@@ -537,7 +538,8 @@ open class AnimationView: LottieView {
   public func convert(_ rect: CGRect, toLayerAt keypath: AnimationKeypath?) -> CGRect? {
     guard let animationLayer = animationLayer else { return nil }
     guard let keypath = keypath else {
-      return viewLayer?.convert(rect, to: animationLayer)
+        return .zero
+//      return viewLayer?.convert(rect, to: animationLayer)
     }
     guard let sublayer = animationLayer.layer(for: keypath) else {
       return nil
@@ -545,7 +547,8 @@ open class AnimationView: LottieView {
     self.setNeedsLayout()
     self.layoutIfNeeded()
     self.forceDisplayUpdate()
-    return animationLayer.convert(rect, to: sublayer)
+    return rect
+//    return animationLayer.convert(rect, to: sublayer)
   }
   
   /**
@@ -560,7 +563,8 @@ open class AnimationView: LottieView {
   public func convert(_ point: CGPoint, toLayerAt keypath: AnimationKeypath?) -> CGPoint? {
     guard let animationLayer = animationLayer else { return nil }
     guard let keypath = keypath else {
-      return viewLayer?.convert(point, to: animationLayer)
+        return .zero
+//      return viewLayer?.convert(point, to: animationLayer)
     }
     guard let sublayer = animationLayer.layer(for: keypath) else {
       return nil
@@ -568,7 +572,8 @@ open class AnimationView: LottieView {
     self.setNeedsLayout()
     self.layoutIfNeeded()
     self.forceDisplayUpdate()
-    return animationLayer.convert(point, to: sublayer)
+    return point
+//    return animationLayer.convert(point, to: sublayer)
   }
   
   /**
@@ -584,12 +589,14 @@ open class AnimationView: LottieView {
   public func convert(_ rect: CGRect, fromLayerAt keypath: AnimationKeypath?, to layer: CALayer) -> CGRect? {
     guard let animationLayer = animationLayer else { return nil }
     guard let keypath = keypath else {
-      return animationLayer.convert(rect, to: layer)
+        return nil
+//      return animationLayer.convert(rect, to: layer)
     }
     guard let sublayer = animationLayer.compositionLayer(for: keypath) else {
       return nil
     }
-    return sublayer.convert(rect, to: layer)
+    return rect
+//    return sublayer.convert(rect, to: layer)
   }
   
   /**
@@ -605,12 +612,14 @@ open class AnimationView: LottieView {
   public func convert(_ point: CGPoint, fromLayerAt keypath: AnimationKeypath?, to layer: CALayer) -> CGPoint? {
     guard let animationLayer = animationLayer else { return nil }
     guard let keypath = keypath else {
-      return animationLayer.convert(point, to: layer)
+        return nil
+//      return animationLayer.convert(point, to: layer)
     }
     guard let sublayer = animationLayer.compositionLayer(for: keypath) else {
       return nil
     }
-    return sublayer.convert(point, to: layer)
+    return point
+//    return sublayer.convert(point, to: layer)
   }
   
   // MARK: - Public (Animation Contents)
@@ -683,24 +692,6 @@ open class AnimationView: LottieView {
     if let animation = animation {
       frame = animation.bounds
     }
-  }
-  
-  public init() {
-    self.animation = nil
-    self.imageProvider = BundleImageProvider(bundle: Bundle.main, searchPath: nil)
-    self.textProvider = DefaultTextProvider()
-    self.videoProvider = DefaultVideoProvider()
-    super.init(frame: .zero)
-    commonInit()
-  }
-  
-  public override init(frame: CGRect) {
-    self.animation = nil
-    self.imageProvider = BundleImageProvider(bundle: Bundle.main, searchPath: nil)
-    self.textProvider = DefaultTextProvider()
-    self.videoProvider = DefaultVideoProvider()
-    super.init(frame: .zero)
-    commonInit()
   }
   
   required public init?(coder aDecoder: NSCoder) {
@@ -854,6 +845,9 @@ open class AnimationView: LottieView {
   
   
   var animationLayer: AnimationContainer? = nil
+//    public var aanimationLayer: SCNLayer? {
+//        animationLayer
+//    }
   
   fileprivate var animationContext: AnimationContext?
   static private let animationName: String = "Lottie"
@@ -884,6 +878,7 @@ open class AnimationView: LottieView {
         animationLayer.currentFrame = currentFrame
     }
     viewLayer?.addSublayer(animationLayer)
+    self.scene = animationLayer.scene
     self.animationLayer = animationLayer
     reloadImages()
     animationLayer.setNeedsDisplay()
@@ -901,9 +896,9 @@ open class AnimationView: LottieView {
   
   func updateRasterizationState() {
     if isAnimationPlaying {
-      animationLayer?.shouldRasterize = false
+//      animationLayer?.shouldRasterize = false
     } else {
-      animationLayer?.shouldRasterize = shouldRasterizeWhenIdle
+//      animationLayer?.shouldRasterize = shouldRasterizeWhenIdle
     }
   }
   
@@ -1067,7 +1062,7 @@ open class AnimationView: LottieView {
     animationContext.closure.animationLayer = animationlayer
     animationContext.closure.animationKey = activeAnimationName
     
-    animationlayer.add(layerAnimation, forKey: activeAnimationName)
+    animationlayer.add(layerAnimation, forKey: "currentFrame")
     updateRasterizationState()
   }
   

@@ -8,8 +8,11 @@
 import Foundation
 import QuartzCore
 import CoreGraphics
+import SceneKit
 
 class GroupNodeProperties: NodePropertyMap, KeypathSearchable {
+    var keypathLayer: SCNNode?
+    
   
   var keypathName: String = "Transform"
   
@@ -81,6 +84,8 @@ class GroupNodeProperties: NodePropertyMap, KeypathSearchable {
 }
 
 class GroupNode: AnimatorNode {
+    var keypathLayer: SCNNode?
+    
   
   // MARK: Properties
   let groupOutput: GroupOutputNode
@@ -113,9 +118,9 @@ class GroupNode: AnimatorNode {
   
   let childKeypaths: [KeypathSearchable]
   
-  var keypathLayer: CALayer? {
-    return container
-  }
+//  var keypathLayer: CALayer? {
+//    return container
+//  }
   
   // MARK: Animator Node Protocol
   
@@ -146,7 +151,7 @@ class GroupNode: AnimatorNode {
   }
   
   func rebuildOutputs(frame: CGFloat) {
-    container.opacity = Float(properties.opacity.value.cgFloatValue) * 0.01
+    container.opacity = CGFloat(Float(properties.opacity.value.cgFloatValue) * 0.01)
     container.transform = properties.caTransform
     groupOutput.setTransform(container.transform, forFrame: frame)
   }

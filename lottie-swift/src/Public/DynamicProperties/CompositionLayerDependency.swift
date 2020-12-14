@@ -6,9 +6,9 @@
 //  Copyright © 2019 YurtvilleProds. All rights reserved.
 //
 
-import QuartzCore
+import SceneKit
 
 public protocol CompositionLayerDependency {
-  func layerUpdated(layer: CALayer)
-  func layerAnimationRemoved(layer: CALayer)
+  func layerUpdated(layer: SCNNode)
+  func layerAnimationRemoved(layer: SCNNode)
 }

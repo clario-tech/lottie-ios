@@ -10,6 +10,7 @@ import Foundation
 import CoreGraphics
 import QuartzCore
 import AVFoundation
+import SceneKit
 #if os(iOS)
 import UIKit
 #endif
@@ -152,7 +153,15 @@ class VideoCompositionLayer: CompositionLayer & CAAnimationDelegate {
             player.play()
         }
         
-        contentsLayer.addSublayer(playerLayer)
+        geometry = SCNPlane(width: contentSize.width, height: contentSize.height)
+        
+        let material = SCNMaterial()
+        
+        material.diffuse.contents = playerLayer
+        
+        geometry?.materials = [material]
+        
+//        contentsLayer.addSublayer(playerLayer)
         self.playerLayer = playerLayer
     }
     

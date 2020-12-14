@@ -8,6 +8,7 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 public enum EffectType: Int, Codable {
 	case none
@@ -52,8 +53,8 @@ class Effect: Codable {
 	let type: EffectType
 	let values: [EffectValue]?
 	
-    public func setUp(layer: CALayer) {}
-	public func apply(layer: CALayer, frame: CGFloat) {}
+    public func setUp(layer: SCNNode) {}
+	public func apply(layer: SCNNode, frame: CGFloat) {}
 	
 	required init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: Effect.CodingKeys.self)

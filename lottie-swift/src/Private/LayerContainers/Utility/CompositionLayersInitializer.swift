@@ -8,6 +8,7 @@
 import Foundation
 import CoreGraphics
 import QuartzCore
+import SceneKit
 
 extension Array where Element == LayerModel {
   
@@ -15,9 +16,9 @@ extension Array where Element == LayerModel {
                                    layerImageProvider: LayerImageProvider,
                                    layerTextProvider: LayerTextProvider,
                                    layerVideoProvider: LayerVideoProvider,
-                                   frameRate: CGFloat, fonts: FontList?) -> [CALayer & Composition] {
-    var compositionLayers = [CALayer & Composition]()
-    var layerMap = [Int : CALayer & Composition]()
+                                   frameRate: CGFloat, fonts: FontList?) -> [SCNNode & Composition] {
+    var compositionLayers = [SCNNode & Composition]()
+    var layerMap = [Int : SCNNode & Composition]()
     
     /// Organize the assets into a dictionary of [ID : ImageAsset]
     var childLayers = [LayerModel]()
@@ -28,15 +29,15 @@ extension Array where Element == LayerModel {
         compositionLayers.append(genericLayer)
         layerMap[layer.index] = genericLayer
       } else if let shapeLayer = layer as? ShapeLayerModel {
-        if shapeLayer.flat {
+//        if shapeLayer.flat {
             let shapeContainer = ShapeCompositionLayer(shapeLayer: shapeLayer)
             compositionLayers.append(shapeContainer)
             layerMap[layer.index] = shapeContainer
-        } else {
-            let shapeContainer = ShapeTransformCompositionLayer(shapeLayer: shapeLayer)
-            compositionLayers.append(shapeContainer)
-            layerMap[layer.index] = shapeContainer
-        }
+//        } else {
+//            let shapeContainer = ShapeTransformCompositionLayer(shapeLayer: shapeLayer)
+//            compositionLayers.append(shapeContainer)
+//            layerMap[layer.index] = shapeContainer
+//        }
       } else if let solidLayer = layer as? SolidLayerModel {
         let solidContainer = SolidCompositionLayer(solid: solidLayer)
         compositionLayers.append(solidContainer)
@@ -44,7 +45,7 @@ extension Array where Element == LayerModel {
       } else if let precompLayer = layer as? PreCompLayerModel,
         let assetLibrary = assetLibrary,
         let precompAsset = assetLibrary.precompAssets[precompLayer.referenceID] {
-        if precompAsset.flat && precompLayer.flat  {
+//        if precompAsset.flat && precompLayer.flat  {
             let precompContainer = PreCompositionLayer(precomp: precompLayer,
                                                        asset: precompAsset,
                                                        layerImageProvider: layerImageProvider,
@@ -54,17 +55,17 @@ extension Array where Element == LayerModel {
                                                        frameRate: frameRate)
             compositionLayers.append(precompContainer)
             layerMap[layer.index] = precompContainer
-        } else {
-            let precompContainer = TransformPreCompositionLayer(precomp: precompLayer,
-                                                       asset: precompAsset,
-                                                       layerImageProvider: layerImageProvider,
-                                                       layerTextProvider: layerTextProvider,
-                                                       layerVideoProvider: layerVideoProvider,
-                                                       assetLibrary: assetLibrary,
-                                                       frameRate: frameRate)
-            compositionLayers.append(precompContainer)
-            layerMap[layer.index] = precompContainer
-        }
+//        } else {
+//            let precompContainer = TransformPreCompositionLayer(precomp: precompLayer,
+//                                                       asset: precompAsset,
+//                                                       layerImageProvider: layerImageProvider,
+//                                                       layerTextProvider: layerTextProvider,
+//                                                       layerVideoProvider: layerVideoProvider,
+//                                                       assetLibrary: assetLibrary,
+//                                                       frameRate: frameRate)
+//            compositionLayers.append(precompContainer)
+//            layerMap[layer.index] = precompContainer
+//        }
       } else if let imageLayer = layer as? ImageLayerModel,
         let assetLibrary = assetLibrary,
         let imageAsset = assetLibrary.imageAssets[imageLayer.referenceID] {

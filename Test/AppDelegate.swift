@@ -9,6 +9,7 @@
 import Cocoa
 import Lottie
 import AVFoundation
+import SceneKit
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -26,14 +27,136 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var view: NSView!
     @IBOutlet weak var gendalfView: NSView!
-    var animationView: AnimationView?
+    @IBOutlet weak var animationView: AnimationView!
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        let animationView = AnimationView(name: "mobilePromo")
-        animationView.frame = view.bounds
+//        let animationView = AnimationView(name: "lumis")
+//        animationView.frame = view.bounds
         animationView.play()
-        view.addSubview(animationView)
+//        view.addSubview(animationView)
         
-        self.animationView = animationView
+//        self.animationView = animationView
+        
+//        animationView.aanimationLayer?.allowsEdgeAntialiasing = true
+        
+        let scene = animationView.scene!
+//    }
+//
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+        
+        // create a new scene
+//        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+//        let scene = SCNScene()
+        
+        // create and add a camera to the scene
+        let cameraNode = SCNNode()
+        let camera = SCNCamera()
+        cameraNode.camera = camera
+        
+//        camer/a.
+        scene.rootNode.addChildNode(cameraNode)
+        
+        // place the camera
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: 15)
+        
+        let boxGeometry = SCNBox(width: 10.0, height: 10.0, length: 10.0, chamferRadius: 1.0)
+          let boxNode = SCNNode(geometry: boxGeometry)
+//          scene.rootNode.addChildNode(boxNode)
+        
+        // create and add a light to the scene
+//        let lightNode = SCNNode()
+//        lightNode.light = SCNLight()
+//        lightNode.light!.type = .omni
+//        lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
+//        scene.rootNode.addChildNode(lightNode)
+        
+        // create and add an ambient light to the scene
+//        let ambientLightNode = SCNNode()
+//        ambientLightNode.light = SCNLight()
+//        ambientLightNode.light!.type = .ambient
+//        ambientLightNode.light!.color = NSColor.darkGray
+//        scene.rootNode.addChildNode(ambientLightNode)
+        
+        // retrieve the ship node
+//        let ship = scene.rootNode.childNode(withName: "ship", recursively: true)!
+//
+//        // animate the 3d object
+//        ship.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 2, z: 0, duration: 1)))
+        
+        // retrieve the SCNView
+//        let scnView = self.view as! SCNView
+        
+        // set the scene to the view
+        
+        
+        let newNode = SCNNode()
+        
+        let geometry = SCNPlane(width: 100, height: 100)
+        let material = SCNMaterial()
+        material.diffuse.contents = NSColor.red
+        geometry.materials = [material]
+        newNode.geometry = geometry
+        
+//        scene.rootNode.addChildNode(newNode)
+        
+//        scnView.scene = scene
+        
+        // allows the user to manipulate the camera
+        animationView.allowsCameraControl = true
+        
+        // show statistics such as fps and timing information
+        animationView.showsStatistics = true
+        
+        // configure the view
+//        scnView.backgroundColor = NSColor.black
+        
+        // Add a click gesture recognizer
+        if #available(OSX 10.10, *) {
+            let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(handleClick(_:)))
+            var gestureRecognizers = animationView.gestureRecognizers
+            gestureRecognizers.insert(clickGesture, at: 0)
+            animationView.gestureRecognizers = gestureRecognizers
+        } else {
+            // Fallback on earlier versions
+        }
+        
+    }
+    
+    @available(OSX 10.10, *)
+    @objc
+    func handleClick(_ gestureRecognizer: NSGestureRecognizer) {
+        // retrieve the SCNView
+        let scnView = self.view as! SCNView
+        
+        // check what nodes are clicked
+        let p = gestureRecognizer.location(in: scnView)
+        let hitResults = scnView.hitTest(p, options: [:])
+        // check that we clicked on at least one object
+        if hitResults.count > 0 {
+            // retrieved the first clicked object
+            let result = hitResults[0]
+            
+            // get its material
+            let material = result.node.geometry!.firstMaterial!
+            
+            // highlight it
+            SCNTransaction.begin()
+            SCNTransaction.animationDuration = 0.5
+            
+            // on completion - unhighlight
+            SCNTransaction.completionBlock = {
+                SCNTransaction.begin()
+                SCNTransaction.animationDuration = 0.5
+                
+                material.emission.contents = NSColor.black
+                
+                SCNTransaction.commit()
+            }
+            
+            material.emission.contents = NSColor.red
+            
+            SCNTransaction.commit()
+        }
     }
 }

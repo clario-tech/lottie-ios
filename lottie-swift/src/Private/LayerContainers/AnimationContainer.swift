@@ -7,6 +7,7 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 /**
  The base animation container.
@@ -44,9 +45,9 @@ class AnimationContainer: CALayer {
     
   func updateDependencies() {
     layersWithDependencies.forEach { layer in
-        guard let layer = layer as? (CALayer & Composition) else { return }
+        guard let layer = layer as? (SCNNode & Composition) else { return }
       layer.layerDependencies.forEach { dependency in
-        dependency.layerAnimationRemoved(layer: layer.contentsLayer)
+        dependency.layerAnimationRemoved(layer: layer)
      }
    }
   }
@@ -67,7 +68,7 @@ class AnimationContainer: CALayer {
         for property in foundProperties {
           property.setProvider(provider: valueProvider)
         }
-        layer.displayWithFrame(frame: presentation()?.currentFrame ?? currentFrame, forceUpdates: true)
+        layer.displayWithFrame(frame: currentFrame, forceUpdates: true)
       }
     }
   }
@@ -82,7 +83,7 @@ class AnimationContainer: CALayer {
     return nil
   }
   
-  func layer(for keypath: AnimationKeypath) -> CALayer? {
+  func layer(for keypath: AnimationKeypath) -> SCNNode? {
     for layer in animationLayers {
       if let foundLayer = layer.layer(for: keypath) {
         return foundLayer
@@ -91,7 +92,7 @@ class AnimationContainer: CALayer {
     return nil
   }
   
-  func compositionLayer(for keypath: AnimationKeypath) -> CALayer? {
+  func compositionLayer(for keypath: AnimationKeypath) -> SCNNode? {
     for layer in animationLayers {
       if let foundLayer = layer.compositionLayer(for: keypath) {
         return foundLayer
@@ -137,8 +138,10 @@ class AnimationContainer: CALayer {
       set { layerVideoProvider.videoProvider = newValue }
     }
   
-  var animationLayers: [CALayer & Composition]
-  fileprivate var layersWithDependencies = Set<CALayer>()
+  var animationLayers: [SCNNode & Composition]
+    public let scene = SCNScene()
+  fileprivate var layersWithDependencies = Set<SCNNode>()
+    
     
   fileprivate let layerImageProvider: LayerImageProvider
   fileprivate let layerTextProvider: LayerTextProvider
@@ -150,6 +153,7 @@ class AnimationContainer: CALayer {
     self.layerVideoProvider = LayerVideoProvider(videoProvider: videoProvider)
     self.animationLayers = []
     super.init()
+    
     bounds = animation.bounds
     let layers = animation.layers.initializeCompositionLayers(assetLibrary: animation.assetLibrary, layerImageProvider: layerImageProvider, layerTextProvider: layerTextProvider, layerVideoProvider: layerVideoProvider, frameRate: CGFloat(animation.framerate), fonts: animation.fonts)
     
@@ -158,9 +162,10 @@ class AnimationContainer: CALayer {
     var videoLayers = [VideoCompositionLayer]()
     
     var mattedLayer: (CALayer & Composition)? = nil
-
+//    let scene = SCNScene()
+    
     for layer in layers.reversed() {
-      layer.bounds = bounds
+//      layer.bounds = bounds
       animationLayers.append(layer)
       if let imageLayer = layer as? ImageCompositionLayer {
         imageLayers.append(imageLayer)
@@ -171,18 +176,19 @@ class AnimationContainer: CALayer {
       if let videoLayer = layer as? VideoCompositionLayer {
         videoLayers.append(videoLayer)
       }
-      if var matte = mattedLayer {
-        /// The previous layer requires this layer to be its matte
-        matte.matteLayer = layer
-        mattedLayer = nil
-        continue
-      }
+//      if var matte = mattedLayer {
+//        /// The previous layer requires this layer to be its matte
+//        matte.matteLayer = layer
+//        mattedLayer = nil
+//        continue
+//      }
       if let matte = layer.matteType,
         (matte == .add || matte == .invert) {
         /// We have a layer that requires a matte.
-        mattedLayer = layer
+//        mattedLayer = layer
       }
-      addSublayer(layer)
+        scene.rootNode.addChildNode(layer)
+//      addSublayer(layer)
     }
     
     layerImageProvider.addImageLayers(imageLayers)
@@ -194,9 +200,9 @@ class AnimationContainer: CALayer {
   
   /// For CAAnimation Use
   public override init(layer: Any) {
-    
+
     let animationLayer = layer as? AnimationContainer
-    
+
     if let animationLayer = animationLayer {
         layerImageProvider = animationLayer.layerImageProvider
         layerTextProvider = animationLayer.layerTextProvider
@@ -206,10 +212,10 @@ class AnimationContainer: CALayer {
         layerTextProvider = LayerTextProvider(textProvider: DefaultTextProvider())
         layerVideoProvider = LayerVideoProvider(videoProvider: DefaultVideoProvider())
     }
-    
+
     self.animationLayers = []
     super.init(layer: layer)
-    
+
     if let animationLayer = animationLayer {
         currentFrame = animationLayer.currentFrame
     }
@@ -227,7 +233,7 @@ class AnimationContainer: CALayer {
     }
     return super.needsDisplay(forKey: key)
   }
-  
+
   override public func action(forKey event: String) -> CAAction? {
     if event == "currentFrame" {
       let animation = CABasicAnimation(keyPath: event)
@@ -239,8 +245,9 @@ class AnimationContainer: CALayer {
   }
   
   public override func display() {
-    guard Thread.isMainThread else { return }
+//    guard Thread.isMainThread else { return }
     var newFrame: CGFloat = self.presentation()?.currentFrame ?? self.currentFrame
+    print(newFrame)
     if respectAnimationFrameRate {
       newFrame = floor(newFrame)
     }

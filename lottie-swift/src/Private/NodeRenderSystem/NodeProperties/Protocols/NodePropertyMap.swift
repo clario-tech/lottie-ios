@@ -7,6 +7,7 @@
 
 import Foundation
 import QuartzCore
+import SceneKit
 
 protocol NodePropertyMap {
   var properties: [AnyNodeProperty] { get }
@@ -18,7 +19,7 @@ extension NodePropertyMap {
     return []
   }
   
-  var keypathLayer: CALayer? {
+  var keypathLayer: SCNNode? {
     return nil
   }
   
